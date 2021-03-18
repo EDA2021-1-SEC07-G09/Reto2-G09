@@ -34,6 +34,9 @@ from DISClib.Algorithms.Sorting import quicksort as qui
 from DISClib.Algorithms.Sorting import mergesort as mer
 import time
 assert cf
+from DISClib.ADT import map as mp
+
+
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -68,6 +71,7 @@ def paisCategoria(catalog, category_ctg, category, country):
         for video in catalog["elements"]:
                 if video["category_id"] == category_ctg[category] and video["country"] == country:
                         loadData(cumple,video)
+                        mp.put
         sublist = cumple.copy()
         return shellSortVideos(sublist,lt.size(sublist),'views')
  
