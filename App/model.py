@@ -40,23 +40,52 @@ los mismos.
 
 # Construccion de modelos
 
-def newCatalog(typelist):
-    catalog = lt.newList(typelist)
+def newCatalog():
+    catalog = {'videos': None,
+               'category_id': None,
+               'country': None,
+               'trending_days': None,
+               'tags': None,
+               'likes': None
+               'views': None}
 
-    return catalog
+catalog['books'] = lt.newList('SINGLE_LINKED', compareBookIds)
+catalog['category_id'] = mp.newMap(10000,
+                                   maptype='CHAINING',
+                                   loadfactor=0.5,
+                                   comparefunction=cmpCategoryId)
+catalog['country'] = mp.newMap(800,
+                                   maptype='CHAINING',
+                                   loadfactor=0.5,
+                                   comparefunction=cmpCountry)                                   
+catalog['trending_days'] = mp.newMap(34500,
+                                maptype='PROBING',
+                                loadfactor=0.5,
+                                comparefunction=cmpVideosByTrendingdays)
 
-def newcategory():
-        category = {}
-        return category
+catalog['tags'] = mp.newMap(40,
+                                 maptype='PROBING',
+                                 loadfactor=0.5,
+                                 comparefunction=cmpTags)
+
+catalog['likes'] = mp.newMap(34500,
+                                  maptype='CHAINING',
+                                  loadfactor=0.5,
+                                  comparefunction=cmpVideosByLikes)
+
+catalog['views'] = mp.newMap(34500,
+                                  maptype='CHAINING',
+                                  loadfactor=0.5,
+                                  comparefunction=cmpVideosByViews)
+return catalog
+
+
+
 
 # Funciones para agregar informacion al catalogo
 
-def loadData(catalog,video):
-        lt.addLast(catalog, video)
 
-def loadCategory_id(category, category_id):
-        name = category_id["name"].lstrip()
-        category[name] = category_id['id']
+
 
 
 # Funciones para creacion de datos
@@ -64,5 +93,53 @@ def loadCategory_id(category, category_id):
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+
+
+def cmpVideos (v1, v2):
+    if (v1 == v2):
+        return 0
+    elif v1 > v2:
+        return 1
+    else :
+        return -1
+
+
+def cmpVideosByViews(video1, video2):
+    return (float(video1['views']) > float(video2['views']))
+
+def cmpVideosByTrendingdays(video1, video2):
+    return (float(video1['trending_days']) > float(video2['trending_days']))
+
+def cmpVideosByLikes(video1, video2):
+    return (float(video1['likes']) > float(video2['likes']))
+
+def cmpCategoryId (keyname, categ):
+    catEntry = me.getKey(categ)
+    if (keyname == catEntry):
+        return 0
+    elif (keyname > catEntry):
+        return 1
+    else:
+        return -1
+
+def cmpCountry (keyname, country):
+    countName = me.getKey(country)
+    if (keyname == countName):
+        return 0
+    elif (keyname > countName):
+        return 1
+    else:
+        return -1
+
+def cmpTags (keyname, tags):
+    tagName = me.getKey(tags)
+    if (keyname == tagName):
+        return 0
+    elif (keyname > tagName):
+        return 1
+    else:
+        return -1
+    
+
 
 # Funciones de ordenamiento
