@@ -64,7 +64,7 @@ catalog['trending_days'] = mp.newMap(34500,
                                 comparefunction=cmpVideosByTrendingdays)
 
 catalog['tags'] = mp.newMap(40,
-                                 maptype='PROBING',
+                                 maptype='CHAINING',
                                  loadfactor=0.5,
                                  comparefunction=cmpTags)
 
@@ -74,7 +74,7 @@ catalog['likes'] = mp.newMap(34500,
                                   comparefunction=cmpVideosByLikes)
 
 catalog['views'] = mp.newMap(34500,
-                                  maptype='CHAINING',
+                                  maptype='PROBING',
                                   loadfactor=0.5,
                                   comparefunction=cmpVideosByViews)
 return catalog
