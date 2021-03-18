@@ -43,6 +43,7 @@ def printMenu():
     print("5- Consultar el video que más días fue trending para una categoría")
     print("6- Consultar X videos con más likes en un país con un tag específico")
     print("6- Consultar X videos con más likes en un país con un tag específico")
+    print("7-Consultar X videos con más likes en una categoría específica")
     print("0- Salir")
 
 catalog = None
