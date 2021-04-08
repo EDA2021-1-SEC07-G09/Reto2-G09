@@ -19,7 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
-
+import time
+import tracemalloc
 import config as cf
 import model
 import csv
@@ -31,21 +32,20 @@ El controlador se encarga de mediar entre la vista y el modelo.
 
 # Inicialización del Catálogo de libros
 
-def initCatalog(typelist):
-    catalog = model.newCatalog(typelist)
+def initCatalog():
+    catalog = model.newCatalog()
     return catalog
 
 def initcategory():
     category_ctg = model.newcategory()
     return category_ctg
-
 # Funciones para la carga de datos
-
 def loadData(catalog):
     """
     Carga los datos de los archivos y cargar los datos en la
     estructura de datos
     """
+    
     loadvideo(catalog)
 
 
@@ -54,6 +54,8 @@ def loadvideo(catalog):
     input_file = csv.DictReader(open(videofile, encoding='utf-8'))
     for video in input_file:
         model.loadData(catalog, video)
+        model.addVideoCatergory(catalog, video)
+        model.addVideoCountry(catalog, video)
 
 
 def loadCategory_id(category_ctg):
@@ -64,7 +66,6 @@ def loadCategory_id(category_ctg):
         model.loadCategory_id(category_ctg, category_id)
 
 # Funciones de ordenamiento
-
 def selectionSortVideos(catalog, size):
 
     return model.selectionSortVideos(catalog, size, 'views')
@@ -88,7 +89,6 @@ def quickSortVideos(catalog, size):
 
 
 # Funciones de consulta sobre el catálogo
-
 def paisCategoria(catalog, category_ctg, category, country):
     return model.paisCategoria(catalog, category_ctg, category, country)
 
@@ -100,3 +100,4 @@ def trendingcategory(catalog, category_ctg, category):
 
 def likespaistag(catalog, country, tag):
     return model.likespaistag(catalog, country, tag)
+
