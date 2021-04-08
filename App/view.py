@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
-
+import time
 import config as cf
 import sys
 import controller
@@ -105,7 +105,7 @@ while True:
         print("Cargando información de los archivos ....")
         catalog = initCatalog()
         category_ctg = initcategory()
-        answer = loadData()
+        answer = loadData(catalog, category_ctg)
         print('Videos cargados: ' + str(lt.size(catalog['video'])))
         print('Catalagos cargados: ' + str(len(category_ctg)))
         print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",

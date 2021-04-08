@@ -26,9 +26,11 @@ import model
 import csv
 
 
+
 """
 El controlador se encarga de mediar entre la vista y el modelo.
 """
+
 
 # Inicialización del Catálogo de libros
 
@@ -40,13 +42,35 @@ def initcategory():
     category_ctg = model.newcategory()
     return category_ctg
 # Funciones para la carga de datos
-def loadData(catalog):
+ 
+
+def loadData(catalog, category_ctg):
     """
     Carga los datos de los archivos y cargar los datos en la
     estructura de datos
     """
+    delta_time = -1.0
+    delta_memory = -1.0
     
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = tracemalloc.getMemory()
+
     loadvideo(catalog)
+    loadCategory_id(category_ctg)
+
+    stop_memory = tracemalloc.getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+
+    return delta_time, delta_memory
+
+    def getTime():
+        return float(time.perf_counter()*1000)
+    
 
 
 def loadvideo(catalog):
@@ -100,4 +124,3 @@ def trendingcategory(catalog, category_ctg, category):
 
 def likespaistag(catalog, country, tag):
     return model.likespaistag(catalog, country, tag)
-
