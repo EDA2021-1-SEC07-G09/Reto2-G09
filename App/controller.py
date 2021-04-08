@@ -54,12 +54,12 @@ def loadData(catalog, category_ctg):
     
     tracemalloc.start()
     start_time = getTime()
-    start_memory = tracemalloc.getMemory()
+    start_memory = getMemory()
 
     loadvideo(catalog)
     loadCategory_id(category_ctg)
 
-    stop_memory = tracemalloc.getMemory()
+    stop_memory = getMemory()
     stop_time = getTime()
     tracemalloc.stop()
 
@@ -68,8 +68,12 @@ def loadData(catalog, category_ctg):
 
     return delta_time, delta_memory
 
-    def getTime():
+def getTime():
         return float(time.perf_counter()*1000)
+
+def getMemory():
+    return tracemalloc.take_snapshot()
+
     
 
 
