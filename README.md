@@ -1,4 +1,6 @@
  Juan Jose Ramirez Cala - 202013228 - jj.ramirezc1@uniandes.edu.co
+ 
+ 
  Santiago Pardo Morales - 202013025 - s.pardom@uniandes.edu.co
 
 #ISIS1225 - Librerias de soporte
