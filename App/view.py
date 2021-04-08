@@ -51,7 +51,7 @@ def initcategory():
     return controller.initcategory()
 
 def loadData(catalog, category):
-    controller.loadData(catalog, category)
+    return controller.loadData(catalog, category)
 
 def printResults(ord_videos, n:int, inputs:int):
 

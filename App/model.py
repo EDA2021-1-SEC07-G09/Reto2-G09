@@ -54,11 +54,11 @@ def newCatalog():
         catalog['video'] = lt.newList('ARRAY_LIST')
         catalog['category_id'] = mp.newMap(34500,
                                         maptype='PROBING',
-                                        loadfactor=0.5,
+                                        loadfactor=0.6,
                                         comparefunction=cmpCategoryId)
         catalog['country'] = mp.newMap(34500,
                                         maptype='PROBING',
-                                        loadfactor=0.5,
+                                        loadfactor=0.6,
                                         comparefunction=cmpCountry)                                   
         
 
