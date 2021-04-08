@@ -50,12 +50,8 @@ def initCatalog():
 def initcategory():
     return controller.initcategory()
 
-def loadData(catalog):
-    controller.loadData(catalog)
-
-
-def loadCategory_id(category):
-    controller.loadCategory_id(category)
+def loadData(catalog, category):
+    controller.loadData(catalog, category)
 
 def printResults(ord_videos, n:int, inputs:int):
 
@@ -108,12 +104,12 @@ while True:
     if inputs == 1:
         print("Cargando información de los archivos ....")
         catalog = initCatalog()
-
-        loadData(catalog)
         category_ctg = initcategory()
-        loadCategory_id(category_ctg)
+        answer = loadData()
         print('Videos cargados: ' + str(lt.size(catalog['video'])))
         print('Catalagos cargados: ' + str(len(category_ctg)))
+        print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{answer[1]:.3f}")
         
 
     elif inputs== 2:
