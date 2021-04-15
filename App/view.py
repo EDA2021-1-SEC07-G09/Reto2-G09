@@ -44,8 +44,8 @@ def printMenu():
     print("6- Consultar X videos con más likes en un país con un tag específico")
     print("0- Salir")
 
-def initCatalog():
-    return controller.initCatalog()
+def initCatalog(colison, factorcarga):
+    return controller.initCatalog(colision, factorcarga)
     
 def initcategory():
     return controller.initcategory()
@@ -102,14 +102,24 @@ while True:
     opcion = input('Seleccione una opción para continuar\n')
     inputs = int(opcion[0])
     if inputs == 1:
+        print("Metodos para solucionar las colisones:")
+        print('1- PROBING')
+        print('2- CHANING')
+        colision = int(input("Seleccione el esquema de colison: "))
+        factorcarga = None
+        if colision == 1 or colision == 'PROBING':
+            colision = "PROBING"
+            factorcarga = float(input("Ingrese el factor de carga, se recomienda sea maximo 0.5: "))
+        elif colision == 2 or colision == 'CHANING':
+            colision = "CHANING"
+            factorcarga= float(input("Ingresa el factor de carga: "))
         print("Cargando información de los archivos ....")
-        catalog = initCatalog()
+        catalog = initCatalog(colision,factorcarga)
         category_ctg = initcategory()
         answer = loadData(catalog, category_ctg)
-        print('Videos cargados: ' + str(lt.size(catalog['video'])))
-        print('Catalagos cargados: ' + str(len(category_ctg)))
-        print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
-              "Memoria [kB]: ", f"{answer[1]:.3f}")
+        print('Videos cargados: ' ,lt.size(catalog['videos']))
+        print('Catalagos cargados: ' ,len(category_ctg))
+        print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",  "Memoria [kB]: ", f"{answer[1]:.3f}")
         
 
     elif inputs== 2:
@@ -122,31 +132,31 @@ while True:
         print('5- quicksort')
         typesort = input('Seleccione el metodo de ordenamiento para continuar\n')
         result = None
-        if size <= lt.size(catalog):
+        if size <= lt.size(catalog['videos']):
             if int(typesort[0]) == 1:
-                result = controller.shellSortVideos(catalog, (size))
+                result = controller.shellSortVideos(catalog['videos'], (size))
                 print("Para la muestra de", size, " elementos, el tiempo (mseg) es: ",
                                             str(result[0]))
                 printResults(result[1],10,inputs)
                 
             elif int(typesort[0]) == 2:
-                result = controller.selectionSortVideos(catalog, size)
+                result = controller.selectionSortVideos(catalog['videos'], size)
                 print("Para la muestra de", size, " elementos, el tiempo (mseg) es: ",
                                             str(result[0]))
                 printResults(result[1],10,inputs)
             
             elif int(typesort[0]) == 3:
-                result = controller.insertionSortVideos(catalog, size)
+                result = controller.insertionSortVideos(catalog['videos'], size)
                 print("Para la muestra de", size, " elementos, el tiempo (mseg) es: ",
                                             str(result[0]))
                 printResults(result[1],10,inputs)
             elif int(typesort[0]) == 4:
-                result = controller.mergeSortVideos(catalog, size)
+                result = controller.mergeSortVideos(catalog['videos'], size)
                 print("Para la muestra de", size, " elementos, el tiempo (mseg) es: ",
                                             str(result[0]))
                 printResults(result[1],10,inputs)
             elif int(typesort[0]) == 5:
-                result = controller.quickSortVideos(catalog, size)
+                result = controller.quickSortVideos(catalog['videos'], size)
                 print("Para la muestra de", size, " elementos, el tiempo (mseg) es: ",
                                             str(result[0]))
                 printResults(result[1],10,inputs)

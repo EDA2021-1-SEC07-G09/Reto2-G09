@@ -45,20 +45,20 @@ los mismos.
 # Construccion de modelos
 
 
-def newCatalog():
-        catalog = {'video': None,
+def newCatalog(colision, factorcarga):
+        catalog = {'videos': None,
                         'category_id': None,
                         'country': None}
  
 
-        catalog['video'] = lt.newList('ARRAY_LIST')
+        catalog['videos'] = lt.newList('ARRAY_LIST')
         catalog['category_id'] = mp.newMap(34500,
-                                        maptype='PROBING',
-                                        loadfactor=0.6,
+                                        maptype=colision,
+                                        loadfactor=factorcarga,
                                         comparefunction=cmpCategoryId)
         catalog['country'] = mp.newMap(34500,
-                                        maptype='PROBING',
-                                        loadfactor=0.6,
+                                        maptype=colision,
+                                        loadfactor=factorcarga,
                                         comparefunction=cmpCountry)                                   
         
 
@@ -69,7 +69,7 @@ def newcategory():
         return category
 # Funciones para agregar informacion al catalogo
 def loadData(catalog,video):
-        lt.addLast(catalog['video'], video)
+        lt.addLast(catalog['videos'], video)
 
 def addVideoCountry(catalog, video):
 
@@ -112,9 +112,13 @@ def paisCategoria(catalog, category_ctg, category, country):
         cumple = lt.newList("ARRAY_LIST")
         pais = mp.get(catalog["country"], country)
         videos = me.getValue(pais)
-        for video in videos['elements']:
+        video = None
+        i = 1
+        while i <= lt.size(videos):
+                video = lt.getElement(videos, i)
                 if video["category_id"] == category_ctg[category]:
                         lt.addLast(cumple,video)
+                i += 1
         sublist = cumple.copy()
         return mergeSortVideos(sublist,lt.size(sublist),'views')
  
@@ -125,7 +129,10 @@ def trendingpais(catalog,country):
         videocopy = None
         pais = mp.get(catalog["country"], country)
         videos = me.getValue(pais)
-        for video in videos["elements"]:
+        video = None
+        i = 1
+        while i <= lt.size(videos):
+                        video = lt.getElement(videos, i)
                         if video['title'] in trending_days:
                                 pos= int(trending_days[video['title']])
                                 cumple['elements'][pos]['trending_days'] += 1
@@ -134,7 +141,7 @@ def trendingpais(catalog,country):
                                 videocopy['trending_days'] = 1
                                 trending_days[video['title']] = lt.size(cumple)
                                 lt.addLast(cumple, videocopy)
- 
+                        i += 1
         return mergeSortVideos(cumple,lt.size(cumple),'trending_days')
 
 def trendingcategory(catalog,category_ctg, category):
@@ -143,7 +150,10 @@ def trendingcategory(catalog,category_ctg, category):
         videocopy = None
         categoria = mp.get(catalog["category_id"], category_ctg[category])
         videos = me.getValue(categoria)
-        for video in videos["elements"]:
+        video = None
+        i = 1
+        while i <= lt.size(videos):
+                        video = lt.getElement(videos, i)
                         if video['title'] in trending_days:
                                 pos= int(trending_days[video['title']])
                                 cumple['elements'][pos]['trending_days'] += 1
@@ -152,23 +162,27 @@ def trendingcategory(catalog,category_ctg, category):
                                 videocopy['trending_days'] = 1
                                 trending_days[video['title']] = lt.size(cumple)
                                 lt.addLast(cumple, videocopy)
+                        i += 1
  
         return mergeSortVideos(cumple,lt.size(cumple),'trending_days')
                      
 def likespaistag(catalog, country, tag):
         videos_tags = {}
-        videotags = None
         cumple = lt.newList("ARRAY_LIST")
         pais = mp.get(catalog["country"], country)
         videos = me.getValue(pais)
-        for video in videos["elements"]:
+        videotags = None
+        video = None
+        i = 1
+        while i <= lt.size(videos):
+                        video = lt.getElement(videos, i)
                         videotags = video["tags"]
                         videotags = videotags.replace('"','')
                         videotags = videotags.split('|')
                         ejecutar = True
-                        i = 0
-                        while ejecutar == True and i < len(videotags):
-                                if tag in videotags[i]:
+                        j = 0
+                        while ejecutar == True and j < len(videotags):
+                                if tag in videotags[j]:
                                         ejecutar = False
                                         if video['title'] in videos_tags:
                                                 likes= int(videos_tags[video['title']][1])
@@ -180,7 +194,8 @@ def likespaistag(catalog, country, tag):
                                                 videos_tags[video['title']] = [lt.size(cumple),video['likes']]
                                                 videocopy = video.copy()
                                                 lt.addLast(cumple, videocopy)
-                                i += 1
+                                j += 1
+                        i += 1
         return mergeSortVideos(cumple,lt.size(cumple),'likes')
                 
                 
@@ -192,15 +207,19 @@ def cmpCategoryId(key, element):
         tagentry = me.getKey(element)
         if (str(key) == str(tagentry)):
                 return 0
-        else:
+        elif (str(key) != str(tagentry)):
                 return 1
+        else:
+                return 0
 
 def cmpCountry(key, element):
         tagentry = me.getKey(element)
         if (str(key) == str(tagentry)):
                 return 0
+        elif (str(key) != str(tagentry)):
+                return 1
         else:
-                return 1 
+                return 0
 
 def cmpVideosByViews(video1, video2):
     return (float(video1['views']) > float(video2['views']))
@@ -216,12 +235,19 @@ def selectionSortVideos(catalog, size, parametro):
         sub_list = lt.subList(catalog, 1, size)
         sub_list = sub_list.copy()
         if parametro == 'trending_days':
+                start_time = time.process_time()
                 selectionSortList = sel.sort(sub_list, cmpVideosByTrendingdays)
+                stop_time = time.process_time()
         elif parametro == 'views':
+                start_time = time.process_time()
                 selectionSortList = sel.sort(sub_list, cmpVideosByViews)
+                stop_time = time.process_time()
         elif parametro == 'likes':
+                start_time = time.process_time()
                 selectionSortList = sel.sort(sub_list, cmpVideosByLikes)
-        return selectionSortList
+                stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        return (elapsed_time_mseg, selectionSortList)
 
 
 def shellSortVideos(catalog, size, parametro):
